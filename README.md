@@ -10,19 +10,20 @@
 
 ## Comparison of Free Plans: NextDNS vs Cloudflare
 
-|                         | NextDNS                                                         | Cloudflare                                                                                                           |
-|-------------------------|-----------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|
-| **DNS Query Limit**     | 300,000 per month                                               | 100,000 per day                                                                                                      |
-| **IPv4 Restrictions**   | DNS queries are limited to a single IP address (can be changed) | DNS queries are strictly limited to a single IP address (automatically assigned by Cloudflare and cannot be changed) |
-| **DoH / DoT / IPv6**    | Unlimited                                                       | Unlimited                                                                                                            |
-| **Setup API Limits**    | 60 requests per minute                                          | Unlimited                                                                                                            |
-| **General Limitations** | None                                                            | Infrastructure is blocked by Roskomnadzor (availability issues in Russia)                                            |
-| **Advantages**          | Built-in ad and tracker blocking options                        | More reliable and fast infrastructure                                                                                |
+|                                  | NextDNS                                                         | Cloudflare                                                                                                           |
+|----------------------------------|-----------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|
+| **DNS Query Limit**              | 300,000 per month                                               | 100,000 per day                                                                                                      |
+| **Billing information required** | No                                                              | Yes                                                                                                                  |
+| **IPv4 Restrictions**            | DNS queries are limited to a single IP address (can be changed) | DNS queries are strictly limited to a single IP address (automatically assigned by Cloudflare and cannot be changed) |
+| **DoH / DoT / IPv6**             | Unlimited                                                       | Unlimited                                                                                                            |
+| **Setup API Limits**             | 60 requests per minute                                          | Unlimited                                                                                                            |
+| **General Limitations**          | None                                                            | Infrastructure is blocked by Roskomnadzor (availability issues in Russia)                                            |
+| **Advantages**                   | Built-in ad and tracker blocking options                        | More reliable and fast infrastructure                                                                                |
 
-In summary: if you are located in Russia, **NextDNS** is your only viable option due to Roskomnadzor restrictions.
-
-If you are in another country, **Cloudflare** offers more generous limits on the free plan. Tracker and ad blocking can also
-be enabled by providing a domain blocklist in `BLOCK`, for example: https://small.oisd.nl/domainswild2
+In summary: 
+- If you are located in Russia, **NextDNS** is your only viable option due to Roskomnadzor restrictions.
+- If you are in other country than Russia, and you're ok with a credit card gate, **Cloudflare** offers more generous limits on the free plan. 
+Tracker and ad blocking can also be enabled by providing a domain blocklist in `BLOCK`, for example: https://small.oisd.nl/domainswild2
 
 ## Easy Setup
 
@@ -49,6 +50,7 @@ values here: [Setup credentials](#setup-credentials)
 [GitHub Actions setup](#github-actions-setup)
 
 ---
+
 ## Set up credentials
 
 ### NextDNS credentials setup
@@ -58,14 +60,9 @@ values here: [Setup credentials](#setup-credentials)
 2) Click on **NextDNS** logo. On the opened page, copy ID from Endpoints section.
    Set it as **environment variable** `CLIENT_ID`
 
-
 ### Cloudflare credentials setup
 
 1) After signing up into a **Cloudflare**, navigate to _Zero Trust_ tab and create an account.
-
-- Free Plan has decent limits, so just choose it.
-- Skip providing payment method step by choosing _Cancel and exit_ (top right corner)
-- Go back to _Zero Trust_ tab
 
 2) Create a **Cloudflare API token**, from https://dash.cloudflare.com/profile/api-tokens
 
@@ -117,7 +114,8 @@ will keep only `1.2.3.4 domain.to.redirect` for the further redirect processing.
 
 Set sources to **environment variable** `BLOCK`
 
-Script will parse sources, keeping only redirects to `0.0.0.0`, `127.0.0.1`, `::1`, and also lines containing domain only.
+Script will parse sources, keeping only redirects to `0.0.0.0`, `127.0.0.1`, `::1`, and also lines containing domain
+only.
 
 Thus, parsing lines
 
@@ -127,12 +125,13 @@ Thus, parsing lines
     ::1 ipv6.to.block
     no-ip.just.domain
 
-will keep only 
+will keep only
 
     domain.to.block
     another.to.block
     no-ip.just.domain
     ipv6.to.block
+
 for the further block processing.
 
 + You may want to provide the same source for both `BLOCK` and `REDIRECT` for **Cloudflare**.
@@ -155,9 +154,11 @@ These domains and their subdomains:
 ## Set up a DNS donor
 
 If IP addresses of domains are outdated, they can be updated via "donor" DNS. You need:
+
 1) Create **environment variable** `DONOR_DNS`
 2) Provide the **DNS-provider** that will be used as a **donor**.
    Use one of the following formats:
+
 - **IPv4** (e.g. `111.88.96.50`)
 - **DoH** (e.g. `https://xbox-dns.ru/dns-query`)
 
@@ -185,7 +186,7 @@ All profiles get _similar_ settings. That means `BLOCK`, `REDIRECT` and `EXCLUDE
 
 ### Multiple profiles of single provider
 
-Put your profiles separated by coma **without whitespace** into related **environment variables**.
+Put your profiles separated by coma into related **environment variables**.
 E.g., two NextDNS profiles must be set as shown:
 
 - `AUTH_SECRET` has: `secret_NextDns_1,secret_NextDns_2`

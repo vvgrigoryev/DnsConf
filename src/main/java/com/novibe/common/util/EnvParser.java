@@ -15,9 +15,12 @@ public class EnvParser {
     public static List<String> parse(String envValue) {
         ArrayList<String> parsed = new ArrayList<>();
         if (isNull(envValue)) return parsed;
-        envValue = envValue.strip();
-        if (envValue.isEmpty()) return parsed;
-        Collections.addAll(parsed, envValue.strip().split(","));
+        for (String value : envValue.split(",")) {
+            String strippedValue = value.strip();
+            if (!strippedValue.isEmpty()) {
+                parsed.add(strippedValue);
+            }
+        }
         return parsed;
     }
 

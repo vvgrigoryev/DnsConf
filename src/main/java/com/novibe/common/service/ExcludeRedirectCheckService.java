@@ -16,7 +16,7 @@ public class ExcludeRedirectCheckService {
 
     public boolean shouldExclude(String domain) {
         for (String ignored : ignoringList) {
-            if (domain.endsWith(ignored)) {
+            if (domain.equals(ignored) || domain.endsWith("." + ignored)) {
                 return true;
             }
         }

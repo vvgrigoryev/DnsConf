@@ -1,6 +1,7 @@
 package com.novibe.common.data_sources;
 
 import com.novibe.common.base_structures.HostsLine;
+import com.novibe.common.exception.UserInputException;
 import com.novibe.common.util.DataParser;
 import com.novibe.common.util.Log;
 import lombok.Setter;
@@ -63,7 +64,12 @@ public abstract class ListLoader<T> {
         HttpRequest request = HttpRequest.newBuilder(URI.create(url))
                 .GET()
                 .build();
-        return client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8)).body();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        if (response.statusCode() > 299) {
+            throw UserInputException.noStackTrace("Failed to load %s list, response code %s from url: %s"
+                    .formatted(listType(), response.statusCode(), url));
+        }
+        return response.body();
     }
 
 }
